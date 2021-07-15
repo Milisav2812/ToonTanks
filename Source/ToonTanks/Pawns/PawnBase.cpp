@@ -4,6 +4,7 @@
 #include "PawnBase.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Math/UnrealMathUtility.h"
 
 // Sets default values
 APawnBase::APawnBase()
@@ -25,6 +26,35 @@ APawnBase::APawnBase()
 
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Projectile Spawn Point"));
 	ProjectileSpawnPoint->SetupAttachment(TurretMesh);
+
+}
+
+void APawnBase::RotateTurret(FVector LookAtTarget)
+{
+	// We dont want to let the camera rotate up or down, just on the X-Y plane
+	FVector RotateAroundZAxis = FVector(LookAtTarget.X, LookAtTarget.Y, TurretMesh->GetComponentLocation().Z);
+	FVector StartLocation = TurretMesh->GetComponentLocation();
+
+	FRotator TurretRotation = FVector(RotateAroundZAxis - StartLocation).Rotation();
+
+	TurretMesh->SetWorldRotation(TurretRotation);	
+}
+
+void APawnBase::Fire()
+{
+	// Get ProjectileSpawnPoint Location && Rotation -> Spawn Projectile class at Location firing towards Rotation.
+	UE_LOG(LogTemp, Warning, TEXT("Fire!"))
+}
+
+void APawnBase::HandleDestruction()
+{
+	// --- Universal functionality --- 
+	// Play death effects particle, sound and camera shake. 
+
+	// --- Then do Child overrides ---
+	// -- PawnTurret - Inform GameMode Turret died -> Then Destroy() self. 
+
+	// -- PawnTank - Inform GameMode Player died -> Then Hide() all components && stop movement input.
 
 }
 

@@ -18,16 +18,23 @@ private:
 	// Used for simple collision
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* CapsuleComp;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BaseMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* TurretMesh;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* ProjectileSpawnPoint;
 
 public:
 	// Sets default values for this pawn's properties
 	APawnBase();
+
+protected:
+
+	// For rotating the turret of the Tank and AI
+	void RotateTurret(FVector LookAtTarget);
+	void Fire();
+
+	// This function will handle the destruction of individual child classes
+	virtual void HandleDestruction();
 };

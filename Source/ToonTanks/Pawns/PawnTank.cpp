@@ -5,6 +5,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 
+#define OUT
+
 APawnTank::APawnTank()
 {
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
@@ -20,6 +22,8 @@ void APawnTank::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Active Player Controller
+	PlayerControllerReference = Cast<APlayerController>(GetController());
 }
 
 // Called every frame
@@ -29,6 +33,19 @@ void APawnTank::Tick(float DeltaTime)
 
 	Rotate();
 	Move();
+
+	if (PlayerControllerReference)
+	{
+		FHitResult TraceHitResult;
+
+		// Which channel to trace on
+		// Type of Collision checks: SImple(false) or COmplex(True)
+		// FHitResult
+		PlayerControllerReference->GetHitResultUnderCursor(ECC_Visibility, false, OUT TraceHitResult);
+		FVector HitLocation = TraceHitResult.ImpactPoint;
+
+		RotateTurret(HitLocation);
+	}
 }
 
 // Called to bind functionality to input
@@ -39,6 +56,7 @@ void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("MoveForward", this, &APawnTank::CalculateMoveInput);
 	PlayerInputComponent->BindAxis("Turn", this, &APawnTank::CalculateRotateInput);
 
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APawnTank::Fire);
 }
 
 void APawnTank::CalculateMoveInput(float Value)
@@ -64,4 +82,10 @@ void APawnTank::Move()
 void APawnTank::Rotate()
 {
 	AddActorLocalRotation(RotateDirection, true);
+}
+
+void APawnTank::HandleDestruction()
+{
+	Super::HandleDestruction();
+	// HIDE Tank
 }
