@@ -34,12 +34,13 @@ public:
 	// Sets default values for this pawn's properties
 	APawnBase();
 
+	// This function will handle the destruction of individual child classes
+	virtual void HandleDestruction();
 protected:
 
 	// For rotating the turret of the Tank and AI
 	void RotateTurret(FVector LookAtTarget);
 	void Fire();
 
-	// This function will handle the destruction of individual child classes
-	virtual void HandleDestruction();
+
 };
